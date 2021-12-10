@@ -38,14 +38,14 @@ public:
         int sz = arr.size();
         vector<int> vmx(sz+1);
         vector<int> vmn(sz+1);
-        stack<int> smx{{-1}};
-        stack<int> smn{{-1}};
+        stack<int> smx{{-1}};   // mono decreasing, push -1 to trick the index
+        stack<int> smn{{-1}};   // mono increasing
         int res = 0;
         for (int i = 0; i < sz; ++i){
             while (smn.top()!=-1 && arr[smn.top()] > arr[i]) smn.pop();
             int j = smn.top();
             vmn[i+1] = vmn[j+1] + (i-j) * arr[i];
-            smn.push(i);
+            smn.push(i);    // save index
             while (smx.top()!=-1 && arr[smx.top()] < arr[i]) smx.pop();
             j = smx.top();
             vmx[i+1] = vmx[j+1] + (i-j) * arr[i];
