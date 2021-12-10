@@ -35,10 +35,10 @@ class Solution{
   vector<int> gate(const vector<int>& tm, const vector<int>& dr){
       int sz = tm.size();
       vector<int> res(sz);
-      int idx0 = next(dr, 0, -1);
+      int idx0 = next(dr, 0, -1);   // index
       int idx1 = next(dr, 1, -1);
-      int now = 0;
-      bool fg = true;
+      int now = 0;                  // time
+      bool fg = true;               // gate status
       while (idx0 < sz && idx1 < sz){
           int t0 = max(now, tm[idx0]);
           int t1 = max(now, tm[idx1]);
