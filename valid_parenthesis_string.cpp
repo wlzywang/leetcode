@@ -15,7 +15,7 @@ s[i] is '(', ')' or '*'.
 
 */
 
-// Recursion TLE
+// Recursion: time limit exceed
 class Solution {
 public:
     bool checkValidString(string s) {
@@ -36,3 +36,39 @@ public:
     }
 };
 
+// separate into blocks: time limit exceed
+class Solution {
+public:
+    bool checkValidString(string s) {
+        vector<vector<int>> parts;
+        
+        int left = 0;
+        int m = 0;
+        for (int i = 0; i < s.size(); ++i){
+            if (s[i] == '(') left++;
+            else if (s[i] == ')'){
+                --left;
+                m = min(m, left);
+            } else {
+                parts.push_back({left, m});
+                parts.push_back({0, 0, 1, 0,-1, -1});
+                left=m=0;
+            }
+        }
+        parts.push_back({left,m});
+        
+        vector<int> prev{0};
+        for (auto v : parts){
+            vector<int> curr;
+            if (prev.empty()) return false;
+            for (auto left : prev){              
+                for (int j = 0; j < v.size(); j = j + 2){
+                    if (left + v[j+1] < 0) continue;
+                    curr.push_back(left+v[j]);
+                }
+            }
+            prev = move(curr);
+        }
+        return find(prev.begin(), prev.end(),0) != prev.end();
+    }  
+};
