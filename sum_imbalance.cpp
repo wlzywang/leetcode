@@ -7,7 +7,7 @@ An subarray is contiguous.
 
 */
 
-Solution1: brute force exceed time limit
+// brute force: exceed time limit
 class Solution1 {
 public:
     long SumImbalance(vector<int> v){
@@ -31,7 +31,7 @@ public:
     }    
 };
 
-Solution2: dp with monostack
+// dp with monostack
 class Solution2 {
 public:
    int SumImbalance(vector<int>& arr){
