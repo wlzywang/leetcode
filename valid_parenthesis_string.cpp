@@ -36,39 +36,74 @@ public:
     }
 };
 
-// separate into blocks: time limit exceed
+// two stacks
 class Solution {
 public:
     bool checkValidString(string s) {
-        vector<vector<int>> parts;
-        
-        int left = 0;
-        int m = 0;
+        stack<int> left, star;
         for (int i = 0; i < s.size(); ++i){
-            if (s[i] == '(') left++;
-            else if (s[i] == ')'){
-                --left;
-                m = min(m, left);
-            } else {
-                parts.push_back({left, m});
-                parts.push_back({0, 0, 1, 0,-1, -1});
-                left=m=0;
+            if (s[i] == '(') left.push(i);
+            else if (s[i] == '*') star.push(i);
+            else {
+                if (!left.empty()) left.pop();
+                else if (!star.empty()) star.pop();
+                else return false;
             }
         }
-        parts.push_back({left,m});
         
-        vector<int> prev{0};
-        for (auto v : parts){
-            vector<int> curr;
-            if (prev.empty()) return false;
-            for (auto left : prev){              
-                for (int j = 0; j < v.size(); j = j + 2){
-                    if (left + v[j+1] < 0) continue;
-                    curr.push_back(left+v[j]);
-                }
-            }
-            prev = move(curr);
+        while (! left.empty() && ! star.empty()){
+            if (left.top() > star.top() ) return false;
+            left.pop();
+            star.pop();
         }
-        return find(prev.begin(), prev.end(),0) != prev.end();
-    }  
+        return left.empty();
+    }
+    
+};
+
+// forward treating '*' as '(', then backward treating '*' as ')'
+class Solution {
+public:
+    bool checkValidString(string s) {
+        int ct = 0;
+        for (auto c : s){
+            if (c == ')'){
+                --ct;
+                if (ct < 0) return false;
+            } else ++ct;
+        }
+        if (ct == 0) return true;
+        ct = 0;
+        for (int i = s.size()-1; i>=0; --i){
+            if (s[i] == '(') {
+                --ct;
+                if (ct < 0) return false;
+            } else ++ct;
+        }
+        return true;
+    }    
+};
+
+// high treating all '*' as '(', low treating '*' as ')' when possible
+class Solution {
+public:
+    bool checkValidString(string s) {
+        int high = 0;
+        int low = 0;
+        for (auto c : s){
+            if (c =='('){
+                ++high;
+                ++low;
+            } else if (c == ')'){
+                --high;
+                if (low > 0) --low;     // meaning when possible
+            } else {
+                ++high;
+                if (low > 0) --low;     // meaning when possible
+            }
+            if (high < 0) return false;
+        }
+        return low == 0;
+
+    }   
 };
